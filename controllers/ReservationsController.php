@@ -3,15 +3,18 @@
 namespace app\controllers;
 
 use app\models\Books;
-use app\models\BookSearch;
+use app\models\Reservations;
+use app\models\ReservationsSearch;
+use app\models\User;
+use yii\base\BaseObject;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * BooksController implements the CRUD actions for Books model.
+ * ReservationsController implements the CRUD actions for Reservations model.
  */
-class BooksController extends Controller
+class ReservationsController extends Controller
 {
     /**
      * @inheritDoc
@@ -32,26 +35,23 @@ class BooksController extends Controller
     }
 
     /**
-     * Lists all Books models.
+     * Lists all Reservations models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new BookSearch();
+        $searchModel = new ReservationsSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
-
-        $highestReservationBook = Books::find()->orderBy(['num_of_reservations' => SORT_DESC])->one();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'highestReservationBook' => $highestReservationBook
         ]);
     }
 
     /**
-     * Displays a single Books model.
+     * Displays a single Reservations model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -64,16 +64,27 @@ class BooksController extends Controller
     }
 
     /**
-     * Creates a new Books model.
+     * Creates a new Reservations model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public function actionCreate($book_id)
     {
-        $model = new Books();
+
+
+        if(\Yii::$app->user->isGuest) {
+            return $this->redirect(['site/login']);
+        }
+        $model = new Reservations();
+        $model->user_id = \Yii::$app->user->id;
+        $model->book_id = $book_id;
+        $user = User::findOne($model->user_id);
+        $book = Books::findOne($model->book_id);
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
+                $book->num_of_reservations += 1;
+                $book->save();
                 return $this->redirect(['books/index']);
             }
         } else {
@@ -82,11 +93,13 @@ class BooksController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'user' => $user,
+            'book' => $book
         ]);
     }
 
     /**
-     * Updates an existing Books model.
+     * Updates an existing Reservations model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -97,7 +110,7 @@ class BooksController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['books/index']);
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
@@ -106,7 +119,7 @@ class BooksController extends Controller
     }
 
     /**
-     * Deletes an existing Books model.
+     * Deletes an existing Reservations model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -120,15 +133,15 @@ class BooksController extends Controller
     }
 
     /**
-     * Finds the Books model based on its primary key value.
+     * Finds the Reservations model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return Books the loaded model
+     * @return Reservations the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Books::findOne(['id' => $id])) !== null) {
+        if (($model = Reservations::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

@@ -2,16 +2,16 @@
 
 namespace app\controllers;
 
-use app\models\Books;
-use app\models\BookSearch;
+use app\models\User;
+use app\models\UsersSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * BooksController implements the CRUD actions for Books model.
+ * UsersController implements the CRUD actions for User model.
  */
-class BooksController extends Controller
+class UsersController extends Controller
 {
     /**
      * @inheritDoc
@@ -32,27 +32,24 @@ class BooksController extends Controller
     }
 
     /**
-     * Lists all Books models.
+     * Lists all User models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new BookSearch();
+        $searchModel = new UsersSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
-
-        $highestReservationBook = Books::find()->orderBy(['num_of_reservations' => SORT_DESC])->one();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'highestReservationBook' => $highestReservationBook
         ]);
     }
 
     /**
-     * Displays a single Books model.
-     * @param int $id ID
+     * Displays a single User model.
+     * @param int $id
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -64,17 +61,17 @@ class BooksController extends Controller
     }
 
     /**
-     * Creates a new Books model.
+     * Creates a new User model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new Books();
+        $model = new User();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['books/index']);
+                return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
             $model->loadDefaultValues();
@@ -86,9 +83,9 @@ class BooksController extends Controller
     }
 
     /**
-     * Updates an existing Books model.
+     * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param int $id ID
+     * @param int $id
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -97,7 +94,7 @@ class BooksController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['books/index']);
+            return $this->redirect(['view', 'id' => $model->id]);
         }
 
         return $this->render('update', [
@@ -106,9 +103,9 @@ class BooksController extends Controller
     }
 
     /**
-     * Deletes an existing Books model.
+     * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
+     * @param int $id
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -120,15 +117,15 @@ class BooksController extends Controller
     }
 
     /**
-     * Finds the Books model based on its primary key value.
+     * Finds the User model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
-     * @return Books the loaded model
+     * @param int $id
+     * @return User the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Books::findOne(['id' => $id])) !== null) {
+        if (($model = User::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

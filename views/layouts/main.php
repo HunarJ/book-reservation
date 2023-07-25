@@ -44,10 +44,10 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
             ['label' => 'Domů', 'url' => ['/site/index']],
             ['label' => 'Knihy', 'url' => ['/books/index']],
             !Yii::$app->user->isGuest && Yii::$app->user->identity->username === 'admin' ? (
-                   ['label' => 'Půjčující', 'url' => ['/site/signup']]
+                   ['label' => 'Půjčující', 'url' => ['/users/index']]
             ) : '' ,
             !Yii::$app->user->isGuest && Yii::$app->user->identity->username === 'admin' ? (
-                   ['label' => 'Rezervace', 'url' => ['/site/signup']]
+                   ['label' => 'Rezervace', 'url' => ['/reservations/index']]
             ) : '' ,
             Yii::$app->user->isGuest
                 ? (['label' => 'Přihlásit se', 'url' => ['/site/login']])

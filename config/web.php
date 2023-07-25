@@ -47,6 +47,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'reservations/create/<book_id:\d+>' => 'reservations/create',
             ],
         ],
 

@@ -12,11 +12,7 @@ use yii\behaviors\TimestampBehavior;
  * @property int $id
  * @property string $name
  * @property string|null $description
- * @property int|null $num_reservations
- * @property int|null $booked
- * @property string|null $booked_from
- * @property string|null $booked_to
- * @property int|null $booked_by
+ * @property int|null $num_of_reservations
  */
 class Books extends \yii\db\ActiveRecord
 {
@@ -28,16 +24,6 @@ class Books extends \yii\db\ActiveRecord
         return 'books';
     }
 
-   /* public function behaviors()
-    {
-        return [
-            TimestampBehavior::class,
-            [
-                'class' => BlameableBehavior::class,
-                'updatedByAttribute' => false
-            ],
-        ];
-    }*/
 
     /**
      * {@inheritdoc}
@@ -46,8 +32,7 @@ class Books extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'required'],
-            [['num_reservations', 'booked', 'booked_by'], 'integer'],
-            [['booked_from', 'booked_to'], 'safe'],
+            [['num_of_reservations'], 'integer'],
             [['name', 'description'], 'string', 'max' => 255],
         ];
     }
@@ -61,16 +46,7 @@ class Books extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'description' => 'Description',
-            'num_reservations' => 'Num Reservations',
-            'booked' => 'Booked',
-            'booked_from' => 'Booked From',
-            'booked_to' => 'Booked To',
-            'booked_by' => 'Booked By',
-        ];
+            'num_of_reservations' => 'Num Reservations'];
     }
 
-    public function getBookedBy()
-    {
-        return $this->hasOne(User::className(), [ 'id' => 'booked_by']);
-    }
 }

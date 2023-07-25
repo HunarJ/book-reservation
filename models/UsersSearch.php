@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Books;
+use app\models\User;
 
 /**
- * BookSearch represents the model behind the search form of `app\models\Books`.
+ * UsersSearch represents the model behind the search form of `app\models\User`.
  */
-class BookSearch extends Books
+class UsersSearch extends User
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class BookSearch extends Books
     public function rules()
     {
         return [
-            [['id', 'num_of_reservations'], 'integer'],
-            [['name', 'description'], 'safe'],
+            [['id'], 'integer'],
+            [['username', 'password', 'auth_key', 'access_token'], 'safe'],
         ];
     }
 
@@ -40,7 +40,7 @@ class BookSearch extends Books
      */
     public function search($params)
     {
-        $query = Books::find();
+        $query = User::find();
 
         // add conditions that should always apply here
 
@@ -59,11 +59,12 @@ class BookSearch extends Books
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'num_of_reservations' => $this->num_of_reservations,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'description', $this->description]);
+        $query->andFilterWhere(['like', 'username', $this->username])
+            ->andFilterWhere(['like', 'password', $this->password])
+            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
+            ->andFilterWhere(['like', 'access_token', $this->access_token]);
 
         return $dataProvider;
     }
